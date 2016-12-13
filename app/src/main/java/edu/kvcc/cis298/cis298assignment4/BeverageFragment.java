@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -26,6 +27,8 @@ public class BeverageFragment extends Fragment {
     private EditText mPack;
     private EditText mPrice;
     private CheckBox mActive;
+    private Button mSelectContact;
+    private Button mSendEmail;
 
     //Private var for storing the beverage that will be displayed with this fragment
     private Beverage mBeverage;
@@ -64,6 +67,8 @@ public class BeverageFragment extends Fragment {
         mPack = (EditText) view.findViewById(R.id.beverage_pack);
         mPrice = (EditText) view.findViewById(R.id.beverage_price);
         mActive = (CheckBox) view.findViewById(R.id.beverage_active);
+        mSelectContact = (Button) view.findViewById(R.id.select_contact_button);
+        mSendEmail = (Button) view.findViewById(R.id.send_email_button) ;
 
         //Set the widgets to the properties of the beverage
         mId.setText(mBeverage.getId());
