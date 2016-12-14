@@ -1,6 +1,10 @@
 package edu.kvcc.cis298.cis298assignment4;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
@@ -35,6 +39,11 @@ public class BeverageFragment extends Fragment {
 
     //Private var for storing the beverage that will be displayed with this fragment
     private Beverage mBeverage;
+
+    // the name of the contact last selected
+    private String contactName;
+    // the email of the contact last selected
+    private String contactEmail;
 
     //Public method to get a properly formatted version of this fragment
     public static BeverageFragment newInstance(String id) {
@@ -71,6 +80,7 @@ public class BeverageFragment extends Fragment {
         mPrice = (EditText) view.findViewById(R.id.beverage_price);
         mActive = (CheckBox) view.findViewById(R.id.beverage_active);
         mSelectContact = (Button) view.findViewById(R.id.select_contact_button);
+        // used to retrieve a contact from contacts with emails
         final Intent selectContact = new Intent(
                 Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI
@@ -86,7 +96,63 @@ public class BeverageFragment extends Fragment {
                     }
                 }
         );
-        mSendEmail = (Button) view.findViewById(R.id.send_email_button) ;
+        mSendEmail = (Button) view.findViewById(R.id.send_email_button);
+        mSendEmail.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_SENDTO);
+                        intent.setData(
+                                Uri.parse("mailto:")
+                        );
+                        intent.putExtra(
+                                Intent.EXTRA_EMAIL,
+                                new String[] {
+                                        contactEmail
+                                }
+                        );
+                        // subject doesn't seem to be auto-filled on my phone
+                        intent.putExtra(
+                                Intent.EXTRA_SUBJECT,
+                                R.string.booze_report_title
+                        );
+                        String stock;
+                        if (mBeverage.isActive()) {
+                            stock = getString(R.string.booze_report_in_stock);
+                        }
+                        else {
+                            stock = getString(R.string.booze_report_out_of_stock);
+                        }
+                        String price = "$" + mBeverage.getPrice();
+                        String boozeReport = getString(
+                                R.string.booze_report_body,
+                                contactName,
+                                mBeverage.getName(),
+                                stock,
+                                price,
+                                mBeverage.getPack()
+                        );
+                        intent.putExtra(
+                                Intent.EXTRA_TEXT,
+                                boozeReport
+                        );
+
+                        startActivity(intent);
+                    }
+                }
+        );
+        PackageManager packageManager = getActivity().getPackageManager();
+        if (packageManager.resolveActivity(
+                selectContact,
+                packageManager.MATCH_DEFAULT_ONLY
+        ) == null) {
+            // disable select contact button if no contact apps are installed
+            mSelectContact.setEnabled(false);
+        }
+        else {
+            // disable send button until a contact is chosen
+            mSendEmail.setEnabled(false);
+        }
 
         //Set the widgets to the properties of the beverage
         mId.setText(mBeverage.getId());
@@ -132,7 +198,8 @@ public class BeverageFragment extends Fragment {
         //Text listener for the Pack. Updates the model as the text is changed
         mPack.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -140,7 +207,8 @@ public class BeverageFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         //Text listener for the price. Updates the model as the text is typed.
@@ -156,14 +224,15 @@ public class BeverageFragment extends Fragment {
                 //parsed number that is input.
                 if (count > 0) {
                     mBeverage.setPrice(Double.parseDouble(s.toString()));
-                //else there is no text in the box and therefore can't be parsed. Just set the price to zero.
+                    //else there is no text in the box and therefore can't be parsed. Just set the price to zero.
                 } else {
                     mBeverage.setPrice(0);
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         //Set a checked changed listener on the checkbox
@@ -174,7 +243,47 @@ public class BeverageFragment extends Fragment {
             }
         });
 
-        //Lastley return the view with all of this stuff attached and set on it.
+        //Lastly return the view with all of this stuff attached and set on it.
         return view;
+    }
+
+    @Override
+    public void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data
+    ) {
+        if (resultCode != Activity.RESULT_OK) {
+            return; // we don't deal with broken results
+        }
+        if (requestCode == REQUEST_CONTACT && data != null) {
+            Uri contactUri = data.getData();
+            String[] queryFields = new String[] {
+                    ContactsContract.Contacts.DISPLAY_NAME//,
+                    //ContactsContract.CommonDataKinds.Email.DATA
+            };
+            Cursor cursor = getActivity().getContentResolver().query(
+                    contactUri,
+                    queryFields,
+                    null,
+                    null,
+                    null
+            );
+            try {
+                if (cursor.getCount() == 0) {
+                    return; // no results
+                }
+                cursor.moveToFirst();
+                contactName = cursor.getString(0);
+                //contactEmail = cursor.getString(1);
+                contactEmail = "test@test.com";
+            }
+            finally {
+                cursor.close();
+            }
+            // enable the email button now that we have a contact
+            mSendEmail.setEnabled(true);
+        }
+
     }
 }

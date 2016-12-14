@@ -3,17 +3,32 @@
 
     <string name="action_settings">Settings</string>
 
+    <!-- view labels and hints -->
     <string name="beverage_id">Id:</string>
     <string name="beverage_name">Name</string>
     <string name="beverage_pack">Pack:</string>
     <string name="beverage_price">Price:</string>
     <string name="beverage_active">Active:</string>
-
     <string name="beverage_id_hint">Item Id</string>
     <string name="beverage_name_hint">Item Name</string>
     <string name="beverage_pack_hint">Item Pack</string>
     <string name="beverage_price_hint">Item Price</string>
-
     <string name="select_contact_button">Select Contact</string>
     <string name="send_email_button">Send Email</string>
+
+    <!-- booze report -->
+    <!--
+    1 = contact name
+    2 = beverage name
+    3 = in stock / active
+    4 = price
+    5 = pack
+    -->
+    <string name="booze_report_title">Booze Report</string>
+    <string name="booze_report_body">
+        Hey %1$s, %2$s is %3$s
+        %2$s costs %4$s and comes in %5$s packs.
+    </string>
+    <string name="booze_report_in_stock">back in stock!</string>
+    <string name="booze_report_out_of_stock">no longer carried.</string>
 </resources>
