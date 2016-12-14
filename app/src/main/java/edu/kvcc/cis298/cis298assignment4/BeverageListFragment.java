@@ -14,9 +14,6 @@ import android.widget.TextView;
 import java.text.NumberFormat;
 import java.util.List;
 
-/**
- * Created by David Barnes on 11/3/2015.
- */
 public class BeverageListFragment extends Fragment {
 
     //Private variables for the recycler view and the required adapter
@@ -26,7 +23,7 @@ public class BeverageListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //Use the inflator to create a new view
+        //Use the inflater to create a new view
         View view = inflater.inflate(R.layout.fragment_beverage_list, container, false);
 
         //Get a handle for the recycler view

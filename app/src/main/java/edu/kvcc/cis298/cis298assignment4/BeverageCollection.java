@@ -7,10 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Created by David Barnes on 11/3/2015.
- * This is a singleton that will store the data for our application
- */
+
 public class BeverageCollection {
 
     //Static variable that represents this class
@@ -65,7 +62,7 @@ public class BeverageCollection {
 
         try {
 
-            //Instanciate a new scanner
+            //Instantiate a new scanner
             scanner = new Scanner(mContext.getResources().openRawResource(R.raw.beverage_list));
 
             //While the scanner has another line to read

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-//Class extnds from the singleFragmentActivity we created
+
 public class BeverageActivity extends SingleFragmentActivity {
 
     //Key for use in sending data from the list activity to this activity

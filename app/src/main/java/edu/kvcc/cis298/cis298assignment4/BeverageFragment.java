@@ -1,6 +1,8 @@
 package edu.kvcc.cis298.cis298assignment4;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -13,13 +15,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
-/**
- * Created by David Barnes on 11/3/2015.
- */
-public class BeverageFragment extends Fragment {
 
+public class BeverageFragment extends Fragment {
+    // constants
+    private static final int REQUEST_CONTACT = 0;
     //String key that will be used to send data between fragments
-    private static final String ARG_BEVERAGE_ID = "crime_id";
+    private static final String ARG_BEVERAGE_ID = "edu.kvcc.cis298.cis298assignment4.beverage_id";
 
     //private class level vars for the model properties
     private EditText mId;
@@ -27,6 +28,8 @@ public class BeverageFragment extends Fragment {
     private EditText mPack;
     private EditText mPrice;
     private CheckBox mActive;
+
+    // view variables
     private Button mSelectContact;
     private Button mSendEmail;
 
@@ -58,7 +61,7 @@ public class BeverageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //Use the inflator to get the view from the layout
+        //Use the inflater to get the view from the layout
         View view = inflater.inflate(R.layout.fragment_beverage, container, false);
 
         //Get handles to the widget controls in the view
@@ -68,6 +71,21 @@ public class BeverageFragment extends Fragment {
         mPrice = (EditText) view.findViewById(R.id.beverage_price);
         mActive = (CheckBox) view.findViewById(R.id.beverage_active);
         mSelectContact = (Button) view.findViewById(R.id.select_contact_button);
+        final Intent selectContact = new Intent(
+                Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_URI
+        );
+        mSelectContact.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivityForResult(
+                                selectContact,
+                                REQUEST_CONTACT
+                        );
+                    }
+                }
+        );
         mSendEmail = (Button) view.findViewById(R.id.send_email_button) ;
 
         //Set the widgets to the properties of the beverage
@@ -78,7 +96,7 @@ public class BeverageFragment extends Fragment {
         mPrice.setText(Double.toString(mBeverage.getPrice()));
         mActive.setChecked(mBeverage.isActive());
 
-        //Text changed listenter for the id. It will not be used since the id will be always be disabled.
+        //Text changed listener for the id. It will not be used since the id will be always be disabled.
         //It can be used later if we want to be able to edit the id.
         mId.addTextChangedListener(new TextWatcher() {
             @Override

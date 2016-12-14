@@ -5,10 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
-/**
- * Created by David Barnes on 11/3/2015.
- * Class that contains some reusable code for activities that use a single fragment
- */
 public abstract class SingleFragmentActivity extends FragmentActivity {
 
 

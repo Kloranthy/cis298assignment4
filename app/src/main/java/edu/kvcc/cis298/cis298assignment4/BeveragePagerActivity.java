@@ -11,12 +11,10 @@ import android.support.v4.view.ViewPager;
 
 import java.util.List;
 
-/**
- * Created by David Barnes on 11/5/2015.
- */
+
 public class BeveragePagerActivity extends FragmentActivity {
 
-    //String that can be used as a key for sendin data between activities
+    //String that can be used as a key for sending data between activities
     private static final String EXTRA_BEVERAGE_ID = "edu.kvcc.cis298.cis298assignment4.beverage_id";
 
     //Private vars for the viewpager and the list of beverages
