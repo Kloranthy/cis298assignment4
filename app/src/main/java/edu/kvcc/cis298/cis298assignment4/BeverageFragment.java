@@ -101,7 +101,8 @@ public class BeverageFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(Intent.ACTION_SENDTO);
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setType("text/plain");
                         intent.setData(
                                 Uri.parse("mailto:")
                         );
@@ -259,8 +260,8 @@ public class BeverageFragment extends Fragment {
         if (requestCode == REQUEST_CONTACT && data != null) {
             Uri contactUri = data.getData();
             String[] queryFields = new String[] {
-                    ContactsContract.Contacts.DISPLAY_NAME//,
-                    //ContactsContract.CommonDataKinds.Email.DATA
+                    ContactsContract.Contacts.DISPLAY_NAME,
+                    ContactsContract.CommonDataKinds.Email.DATA
             };
             Cursor cursor = getActivity().getContentResolver().query(
                     contactUri,
@@ -275,8 +276,7 @@ public class BeverageFragment extends Fragment {
                 }
                 cursor.moveToFirst();
                 contactName = cursor.getString(0);
-                //contactEmail = cursor.getString(1);
-                contactEmail = "test@test.com";
+                contactEmail = cursor.getString(1);
             }
             finally {
                 cursor.close();

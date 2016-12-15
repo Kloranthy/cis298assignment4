@@ -21,7 +21,7 @@ public class BeveragePagerActivity extends FragmentActivity {
     private ViewPager mViewPager;
     private List<Beverage> mBeverages;
 
-    //Public static method that will return a properly formateed intent that can get this activity started
+    //Public static method that will return a properly formatted intent that can get this activity started
     public static Intent newIntent(Context context, String id) {
         Intent intent = new Intent(context, BeveragePagerActivity.class);
         intent.putExtra(EXTRA_BEVERAGE_ID, id);
