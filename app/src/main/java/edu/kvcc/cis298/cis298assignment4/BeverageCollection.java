@@ -1,14 +1,25 @@
 package edu.kvcc.cis298.cis298assignment4;
 
 import android.content.Context;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 
+
 public class BeverageCollection {
+
+    // String constant for logging
+    private static final String TAG = "BeverageCollection";
 
     //Static variable that represents this class
     private static BeverageCollection sBeverageCollection;
@@ -57,6 +68,10 @@ public class BeverageCollection {
     //Method to load the beverage list from a CSV file
     private void loadBeverageList() {
 
+
+    }
+
+    private void fetchBeveragesFromCSV() {
         //Define a scanner
         Scanner scanner = null;
 
@@ -85,11 +100,29 @@ public class BeverageCollection {
                 mBeverages.add(new Beverage(id, name, pack, price, active));
             }
 
-        //catch any errors that occur and finally close the scanner
+            //catch any errors that occur and finally close the scanner
         } catch (Exception e) {
             Log.e("Read CSV", e.toString());
         } finally {
             scanner.close();
+        }
+    }
+
+    private List<Beverage> fetchBeveragesFromRemote() {
+
+    }
+
+    private class FetchBeveragesFromRemoteTask
+        extends AsyncTask<Void, Void, List<Beverage>>
+    {
+        @Override
+        protected void onPostExecute(List<Beverage> beverages) {
+            return new BeverageFetcher().fetchBeverages();
+        }
+
+        @Override
+        protected List<Beverage> doInBackground(Void... voids) {
+            return null;
         }
     }
 }

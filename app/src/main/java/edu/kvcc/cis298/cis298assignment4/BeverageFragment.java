@@ -19,9 +19,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
-
+/**
+ * beverage detail view
+ */
 public class BeverageFragment extends Fragment {
     // constants
+    /**
+     * constant used to get contact info
+     */
     private static final int REQUEST_CONTACT = 0;
     //String key that will be used to send data between fragments
     private static final String ARG_BEVERAGE_ID = "edu.kvcc.cis298.cis298assignment4.beverage_id";
@@ -103,25 +108,24 @@ public class BeverageFragment extends Fragment {
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.setType("text/plain");
-                        intent.setData(
-                                Uri.parse("mailto:")
-                        );
+//                        intent.setData(
+//                                Uri.parse("mailto:")
+//                        );
                         intent.putExtra(
                                 Intent.EXTRA_EMAIL,
-                                new String[] {
+                                new String[]{
                                         contactEmail
                                 }
                         );
                         // subject doesn't seem to be auto-filled on my phone
                         intent.putExtra(
                                 Intent.EXTRA_SUBJECT,
-                                R.string.booze_report_title
+                                getString(R.string.booze_report_title)
                         );
                         String stock;
                         if (mBeverage.isActive()) {
                             stock = getString(R.string.booze_report_in_stock);
-                        }
-                        else {
+                        } else {
                             stock = getString(R.string.booze_report_out_of_stock);
                         }
                         String price = "$" + mBeverage.getPrice();
@@ -149,8 +153,7 @@ public class BeverageFragment extends Fragment {
         ) == null) {
             // disable select contact button if no contact apps are installed
             mSelectContact.setEnabled(false);
-        }
-        else {
+        } else {
             // disable send button until a contact is chosen
             mSendEmail.setEnabled(false);
         }
@@ -257,31 +260,70 @@ public class BeverageFragment extends Fragment {
         if (resultCode != Activity.RESULT_OK) {
             return; // we don't deal with broken results
         }
+        String contactID;
         if (requestCode == REQUEST_CONTACT && data != null) {
             Uri contactUri = data.getData();
-            String[] queryFields = new String[] {
-                    ContactsContract.Contacts.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Email.DATA
+            // getting the name from the contact data
+            String[] projectionName = new String[]{
+                    ContactsContract.Contacts._ID,
+                    ContactsContract.Contacts.DISPLAY_NAME
             };
-            Cursor cursor = getActivity().getContentResolver().query(
-                    contactUri,
-                    queryFields,
-                    null,
-                    null,
-                    null
-            );
-            try {
-                if (cursor.getCount() == 0) {
+            try (
+                    Cursor cursorName = getActivity()
+                            .getContentResolver()
+                            .query(
+                                contactUri,// uri = the content to retrieve
+                                projectionName,// projection = columns to return
+                                null,// selection = sql where clause to filter results
+                                null,// selection args = parameters for filter
+                                null// sort order = sql order by clause
+                    )
+            ) {
+                if (cursorName.getCount() == 0) {
                     return; // no results
                 }
-                cursor.moveToFirst();
-                contactName = cursor.getString(0);
-                contactEmail = cursor.getString(1);
+                cursorName.moveToFirst();
+                contactID = cursorName.getString(0);
+                contactName = cursorName.getString(1);
             }
-            finally {
-                cursor.close();
+            // getting the email from the contact data
+            Uri emailUri = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+            String[] projectionEmail = new String[] {
+                    ContactsContract.CommonDataKinds.Email.DATA
+            };
+            String selection = ContactsContract.Contacts._ID + " = ?";
+            String[] selectionArgs = new String[] {
+                    contactID
+            };
+            try (
+                    Cursor cursorEmail = getActivity()
+                            .getContentResolver()
+                            .query(
+                                    emailUri,// uri = the content to retrieve
+                                    projectionEmail,// projection = columns to return
+                                    selection,// selection = sql where clause to filter results
+                                    selectionArgs,// selection args = parameters for filter
+                                    null// sort order = sql order by clause
+                            )
+            ) {
+                if (cursorEmail.getCount() == 0) {
+                    // no results but we don't return because
+                    // we have some contact info
+                    contactEmail = "";
+                }
+                else {
+                    cursorEmail.moveToFirst();
+                    contactEmail = cursorEmail.getString(
+                            cursorEmail.getColumnIndex(
+                                    ContactsContract.CommonDataKinds.Email.DATA
+                            )
+                    );
+                }
             }
-            // enable the email button now that we have a contact
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            // enable the email button now that we have some contact info
             mSendEmail.setEnabled(true);
         }
 
