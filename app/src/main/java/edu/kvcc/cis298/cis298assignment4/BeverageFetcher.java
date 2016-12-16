@@ -91,7 +91,16 @@ public class BeverageFetcher {
     {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            
+            String id = jsonObject.getString("id");
+            String name = jsonObject.getString("name");
+            String pack = jsonObject.getString("pack");
+            double price = Double.parseDouble(
+                jsonObject.getString("price")
+            );
+            boolean active = (jsonObject.getInt("isActive") == 1);
+            beverages.add(new Beverage(id, name, pack, price, active));
         }
+
+        Log.i(TAG, "beverages added");
     }
 }

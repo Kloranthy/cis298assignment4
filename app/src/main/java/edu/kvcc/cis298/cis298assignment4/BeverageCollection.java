@@ -1,15 +1,10 @@
 package edu.kvcc.cis298.cis298assignment4;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -65,10 +60,33 @@ public class BeverageCollection {
         return null;
     }
 
-    //Method to load the beverage list from a CSV file
     private void loadBeverageList() {
+        fetchBeveragesFromRemote();
+        if (mBeverages.isEmpty()) {
+            // was going to leave in csv option as a backup
+            // but due to the delay it was always triggered
+            fetchBeveragesFromCSV();
+        }
+    }
 
+    private void fetchBeveragesFromRemote() {
+        new FetchBeveragesFromRemoteTask().execute();
+    }
 
+    private class FetchBeveragesFromRemoteTask
+            extends AsyncTask<Void, Void, List<Beverage>>
+    {
+        @Override
+        protected List<Beverage> doInBackground(Void... voids) {
+            return new BeverageFetcher().fetchBeverages();
+        }
+
+        @Override
+        protected void onPostExecute(List<Beverage> beverages) {
+            Log.i(TAG, "purging old list and adding fetched list");
+            mBeverages.clear();
+            mBeverages.addAll(beverages);
+        }
     }
 
     private void fetchBeveragesFromCSV() {
@@ -105,24 +123,6 @@ public class BeverageCollection {
             Log.e("Read CSV", e.toString());
         } finally {
             scanner.close();
-        }
-    }
-
-    private List<Beverage> fetchBeveragesFromRemote() {
-
-    }
-
-    private class FetchBeveragesFromRemoteTask
-        extends AsyncTask<Void, Void, List<Beverage>>
-    {
-        @Override
-        protected void onPostExecute(List<Beverage> beverages) {
-            return new BeverageFetcher().fetchBeverages();
-        }
-
-        @Override
-        protected List<Beverage> doInBackground(Void... voids) {
-            return null;
         }
     }
 }
