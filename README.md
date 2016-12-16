@@ -1,6 +1,6 @@
 # Assignment 4 - Add Implicit Intents and HTTP data loading to Beverage app.
 ## Due 12-12-2016
-## Author
+## Author Josh Weigel
 
 
 
@@ -27,11 +27,6 @@ In order to get the returned JSON string from the web service into something tha
 
     JSONArray jsonBeverages = new JSONArray(jsonString);
 
-Here are some screen shots showing what the new details page and email should look like.
-
-![Application Detail Portrait Layout](http://barnesbrothers.homeserver.com/cis298/assignmentImages/assignment4a.jpg "Application Detail Portrait Layout")
-![Application Email Message Layout](http://barnesbrothers.homeserver.com/cis298/assignmentImages/assignment4b.jpg "Application Email Message Layout")
-
 Solution Requirements:
 
 * Add button for Selecting a Contact
@@ -45,20 +40,6 @@ Optional Extra Credit:
 
 * Use an SQLite database as the data source for the application
 * Pre-load SQLite database with data from Web Service
-
-### Notes
-
-You will need to add a permission to use contacts to the Android Manifest file. The book only fetches the users name, and therefore does not need to ask permission. We would like to get the email for the user, so permission is needed. The permission is called:
-
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
-The book does not cover how to pull the email address of a contact. It is a little more work than just the name. It requires making two queries to the contacts database. This stackoverflow answer should help you figure out what you need to do to get the email address for a contact. Because we are requesting data from a contacts 'database', a lot of the syntax is similar to what is done when interacting with SQLite.
-
-http://stackoverflow.com/questions/10117049/get-only-email-address-from-contact-list-android
-
-You will also need to add permission to the manifest to allow access to the Internet. The book DOES cover this.
-
-You will probably need to add an email account and a contact to your virtual device in order to test this functionality.
 
 ## Grading
 | Feature                           | Points |
@@ -85,54 +66,11 @@ Setup a SQLite database to maintain the information for the Beverages. When the 
 The application must do all of the above work to get the extra credit. In order to satisfy the web service grading part of the assignment, the application must either load the Beverage data from the web service when the application starts up (no database), or load the Beverage data when the database is created (with database). If there is no web service functionality for one of those two features, then you can not get any points for that section of grading.
 
 ## Outside Resources Used
-
+Google, StackOverflow, Android Developer
 
 
 ## Known Problems, Issues, And/Or Errors in the Program
+email is not (successfully) retrieved from contact.
+most of the time it will return null or some kind of internal email
+on some contacts it will retrieve another contact's email address
 
-
-
-# Original Assignment README
-
-## Description
-
-Create a master detail application to view the contents of a beverage list.
-The master part will display a list of all of the beverage items in the list.
-The Detail part will display the details of a specific beverage item.
-The User should be able to go up and down items in the list by swiping left or right on a detail page (View Pager).
-The App should look like the screen shots I have provided.
-There is no need to save any information changed in the application to the CSV file.
-
-The properties of the CSV file are as follows:
-
-1. Item Number
-2. Item Description
-3. Item Pack Size
-4. Item Case Price
-5. Whether the item is currently active. This is represented by a string that either says True, or False.
-
-Solution Requirements:
-
-* Master layout (You can use the same layout for both Portrait and Landscape unless you feel the need to make one for each)
-* Detail layout (You can use the same layout for both Portrait and Landscape unless you feel the need to make one for each)
-* Fragments for all of the layouts (Except ViewPager. That one is a little different.)
-* Ability to click on a list item and start a new Activity that displays the details of the list item.
-* Updating information in the detail view should be reflected in the list view when returning to the list.
-* Class to represent a Beverage Item (POJO)
-* ArrayList for the list of Beverage Items
-* RecyclerView to display the master view
-* Read in CSV file and create ArrayList of Beverage Items from the data in the CSV file
-* Use View Pager to swipe left and right on detail page to go up and down in the list
-* Should look like the screen shots provided
-* Remember Documentation, and README
-
-![Application Master Portrait Layout](http://barnesbrothers.homeserver.com/cis298/assignmentImages/assignment3a.jpg "Application Master Portrait Layout")
-![Application Detail Portrait Layout](http://barnesbrothers.homeserver.com/cis298/assignmentImages/assignment3b.jpg "Application Detail Portrait Layout")
-
-### Notes
-
-The book does not cover how to read in a CSV file. We will try/plan to do something in class to demonstrate how to get the CSV read in.
-You should also do your own research into how to read in a csv file in android
-The location of the file to be read in is in the following paths:
-Inside Android Studio: app/res/raw/
-Through File System:   app/src/main/res/raw/
